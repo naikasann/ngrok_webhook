@@ -32,4 +32,3 @@ def data_form():
 ## おまじない
 if __name__ == "__main__":
     app.run(debug=True)
-    print("aa")
