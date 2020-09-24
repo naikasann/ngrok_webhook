@@ -8,14 +8,14 @@ app = Flask(__name__)
 @app.route("/")
 def top_page():
     # TODO : html create.
-    return render_template('top_page.html', title='test server')
+    return render_template("index.html")
 
 @app.route("/user/<name>")
 def user_data():
     # TODO : You can view details of the user's information.
     # TODO : html create.
     # NOW => error ;<
-    return render_template('user.html', title='test server')
+    return render_template('user.html')
 
 @app.route("/data_form", methods=["POST"])
 def data_form():
@@ -32,4 +32,3 @@ def data_form():
 ## おまじない
 if __name__ == "__main__":
     app.run(debug=True)
-    print("aa")
