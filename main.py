@@ -41,6 +41,7 @@ def data_form():
     if request.method == 'POST':
         # TODO : Register with databases and other data management systems.
         result = "ok."
+        print(request.form)
     else:
         result = "dont method request."
     return jsonify({
