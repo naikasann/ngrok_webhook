@@ -3,23 +3,28 @@ from flask import Flask
 from flask import request
 from flask import render_template
 from flask import jsonify
-
+from sqlalchemy import create_engine,Column,Integer,String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from SqlController.MysqlController import MysqlController
 
 
 app = Flask(__name__)
+engine=create_engine("sqlite:///sample.sqlite3")
+Base=declarative_base()
 
-@app.route("/")
+@app.route("/")#トップページ
 def top_page():
     # TODO : html create.
     return render_template("index.html")
 
-@app.route("/registration")
+@app.route("/registration")#登録ページ
 def user_registration():
     # TODO : user resistration page.
     return render_template("resistration.html")
 
-@app.route("/user")
+@app.route("/user")#ユーザーページ
 def user_research():
     return render_template("user_login.html")
     # TODO : user reseach page.
@@ -64,7 +69,13 @@ def get_user_state():
         "requeststate" : requeststate,
         "result" : result
     })
-
+@app.route("/login",methods=["POST"])#ログイン承認？IDとパスワードがあっていれば
+def test():#承認処理
+    return render_template("index.html")#とりあえずトップページ
+@app.route("/sign_up",methods=["POST"])#登録する
+def sign():
+    #データがタブっていなけばログインできる
+    return render_template("index.html")
 # application runnning.
 if __name__ == "__main__":
     app.run(debug=True)
