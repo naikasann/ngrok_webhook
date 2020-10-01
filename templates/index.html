@@ -9,9 +9,10 @@
           <li class="nav-item justify-content-end"><a class="nav-link" href="/user">ログイン</a></li>
         </ul> 
       </nav>
+      {% for user in all_userdata %}
       <p>
-        何か書く
-      
+        {{user.id}}:{{user.device_id}}:{{user.password}}
       </p>
+      {% endfor %}
     </header>
 {%- endblock %}
