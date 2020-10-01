@@ -5,19 +5,20 @@ from flask import render_template
 from flask import jsonify
 from sqlalchemy import create_engine,Column,Integer,String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from SqlController.MysqlController import MysqlController
 
+from SqlController.userdata import UserData
 
 app = Flask(__name__)
-engine=create_engine("sqlite:///sample.sqlite3")
-Base=declarative_base()
+#engine=create_engine("sqlite:///sample.sqlite3")
+#Base=declarative_base()
 
 @app.route("/")#トップページ
 def top_page():
     # TODO : html create.
-    return render_template("index.html")
+    alldata=UserData.getAll()
+    return render_template("index.html",all_userdata=alldata)
 
 @app.route("/registration")#登録ページ
 def user_registration():
