@@ -5,14 +5,15 @@
         <ul class="nav nav-tabs nav-justified">
           <li class="nav-item"><a class="nav-link active" href="/">index</a></li>
           <li class="nav-item"><a class="nav-link" href="/registration">resistration</a></li>
-          <li class="nav-item"><a class="nav-link" href="/user_info">user_info</a></li>
           <li class="nav-item justify-content-end"><a class="nav-link" href="/user">ログイン</a></li>
         </ul> 
       </nav>
+      <h1>ようこそ</h1>
       {% for user in all_userdata %}
       <p>
         {{user.id}}:{{user.device_id}}:{{user.password}}
       </p>
       {% endfor %}
+      <p>{{log}}</p>
     </header>
 {%- endblock %}

@@ -1,12 +1,15 @@
+from SqlController.receivetable import ReceiveData
 from types import resolve_bases
 from flask import Flask
 from flask import request
 from flask import render_template
 from flask import jsonify
+from flask.globals import session
 from sqlalchemy import create_engine,Column,Integer,String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.exc import NoResultFound
-from SqlController.MysqlController import MysqlController
+
+from sqlalchemy.orm import sessionmaker
 
 from SqlController.userdata import UserData
 
@@ -18,7 +21,7 @@ app = Flask(__name__)
 def top_page():
     # TODO : html create.
     alldata=UserData.getAll()
-    return render_template("index.html",all_userdata=alldata)
+    return render_template("index.html",all_userdata=alldata,log="")
 
 @app.route("/registration")#登録ページ
 def user_registration():
@@ -41,6 +44,14 @@ def user_data():
 @app.route("/user_info")
 def author_info():
     return render_template("user_info.html")
+
+@app.route("/graph")
+def graph():
+    return render_template("graph.html")
+
+@app.route("/userpage")
+def userpage():
+    return render_template("userpage.html")
 
 @app.route("/data_form", methods = ["POST"])
 def data_form():
@@ -70,13 +81,41 @@ def get_user_state():
         "requeststate" : requeststate,
         "result" : result
     })
+
 @app.route("/login",methods=["POST"])#ログイン承認？IDとパスワードがあっていれば
 def test():#承認処理
-    return render_template("index.html")#とりあえずトップページ
+    request_id=request.form.get("id")
+    request_password=request.form.get("pass")
+    engine=create_engine("sqlite:///user.sqlite3")
+    Session=sessionmaker(bind=engine)
+    ses=Session()
+    temp=ses.query(UserData).filter(UserData.id==request_id).all()
+    ses.close()
+    for i in temp:
+        if str(i.password)==str(request_password):   #str()にしておかないとログインできない
+            all_data=ReceiveData.getAll()
+            return render_template("userpage.html",all_data=all_data)
+    return render_template("index.html",log="IDまたはパスワードが違います")#とりあえずトップページ
+
 @app.route("/sign_up",methods=["POST"])#登録する
 def sign():
     #データがタブっていなけばログインできる
-    return render_template("index.html")
+    request_id=request.form.get("id")
+    request_device_id=request.form.get("device_id")
+    request_password=request.form.get("pass")
+    userdata=UserData(id=request_id,device_id=request_device_id,password=request_password)
+    engine=create_engine("sqlite:///user.sqlite3")
+    Session=sessionmaker(bind=engine)
+    ses=Session()
+    if(len(ses.query(UserData).filter(UserData.id==request_id).all())>=1):
+        ses.close()
+        return render_template("index.html",log="IDかぶりで登録できませんでした。")
+    ses.add(userdata)
+    ses.commit()
+    ses.close()
+    #userdata.add()
+    return render_template("index.html",log="登録成功")
+
 # application runnning.
 if __name__ == "__main__":
     app.run(debug=True)

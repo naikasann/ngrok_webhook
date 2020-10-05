@@ -10,23 +10,24 @@ from SqlController.database import init_db
 
 Base=declarative_base()
 
-class UserData(Base):
+class ReceiveData(Base):
     # sql database table name.
-    __tablename__="usertable"
+    __tablename__="receivetable"
     # Declaration of each column in the userdata table
-    id=Column(String,primary_key=True)
-    device_id=Column(String(255))
-    password=Column(String(255))
+    device_id=Column(String,primary_key=True)
+    data=Column(String(255))
+    timestamp=Column(String(255))
+    rawdata=Column(String(800))
 
-
-    def __init__(self,id=None,device_id=None,password=None):
+    def __init__(self,device_id=None,data=None,timestamp=None,rawdata=None):
         """
         function : Initialize the class.
                 　　It also declares the variables in the class.
         """
-        self.id=id
         self.device_id=device_id
-        self.password=password
+        self.data=data
+        self.timestamp=timestamp
+        self.rawdata=rawdata
         # database class cast.
         init_db()
         """engine=create_engine("sqlite:///user.sqlite3")
@@ -42,9 +43,10 @@ class UserData(Base):
         return   :  table variable.
         """
         return{
-            "id":str(self.id),
             "device_id":str(self.device_id),
-            "password":str(self.password)
+            "data":str(self.data),
+            "timestamp":str(self.timestamp),
+            "rawdata":str(self.rawdata)
         }
 
     def getByList(self, arr):
@@ -66,6 +68,6 @@ class UserData(Base):
         engine=create_engine("sqlite:///user.sqlite3")
         Session=sessionmaker(bind=engine)
         ses=Session()
-        res=ses.query(UserData).all()
+        res=ses.query(ReceiveData).all()
         ses.close()
         return res
