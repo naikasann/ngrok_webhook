@@ -90,11 +90,12 @@ def test():#承認処理
     Session=sessionmaker(bind=engine)
     ses=Session()
     temp=ses.query(UserData).filter(UserData.id==request_id).all()
-    ses.close()
     for i in temp:
         if str(i.password)==str(request_password):   #str()にしておかないとログインできない
-            all_data=ReceiveData.getAll()
+            all_data=ses.query(ReceiveData).filter(ReceiveData.device_id==i.device_id).all()
+            ses.close()
             return render_template("userpage.html",all_data=all_data)
+    ses.close()
     return render_template("index.html",log="IDまたはパスワードが違います")#とりあえずトップページ
 
 @app.route("/sign_up",methods=["POST"])#登録する
