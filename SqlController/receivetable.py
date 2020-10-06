@@ -65,7 +65,7 @@ class ReceiveData(Base):
         function :　Retrieve all columns of the user table
         return   :  All data in the usertable. (maybe : list?)
         """
-        engine=create_engine("sqlite:///user.sqlite3")
+        engine=create_engine("sqlite:///database.sqlite3")
         Session=sessionmaker(bind=engine)
         ses=Session()
         res=ses.query(ReceiveData).all()

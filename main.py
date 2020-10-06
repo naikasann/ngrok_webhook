@@ -86,7 +86,7 @@ def get_user_state():
 def test():#承認処理
     request_id=request.form.get("id")
     request_password=request.form.get("pass")
-    engine=create_engine("sqlite:///user.sqlite3")
+    engine=create_engine("sqlite:///database.sqlite3")
     Session=sessionmaker(bind=engine)
     ses=Session()
     temp=ses.query(UserData).filter(UserData.id==request_id).all()
@@ -105,7 +105,7 @@ def sign():
     request_device_id=request.form.get("device_id")
     request_password=request.form.get("pass")
     userdata=UserData(id=request_id,device_id=request_device_id,password=request_password)
-    engine=create_engine("sqlite:///user.sqlite3")
+    engine=create_engine("sqlite:///database.sqlite3")
     Session=sessionmaker(bind=engine)
     ses=Session()
     if(len(ses.query(UserData).filter(UserData.id==request_id).all())>=1):
