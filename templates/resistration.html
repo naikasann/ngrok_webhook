@@ -18,21 +18,21 @@
         <form method="post" action="/sign_up">
           <div class="form-group">
             <label for="id">id</label>
-            <input type="text" class="form-control" id="id" name="id" value="{{id}}">
+            <input type="text" class="form-control" id="id" name="id" value="{{id}}" required>
             <small class="form-text text-muted">
               ※登録したいIDを入力
             </small>
           </div>
           <div class="form-group">
             <label for="device_id">device_id</label>
-            <input type="text" class="form-control" id="device_id" name="device_id">
+            <input type="text" class="form-control" id="device_id" name="device_id" required>
             <small class="form-text text-muted">
               ※登録するDeviceIDを入力
             </small>
           </div>
           <div class="form-group">
             <label for="pass">password</label>
-            <input type="password" class="form-control" id="pass" name="pass">
+            <input type="password" class="form-control" id="pass" name="pass" required>
             <small class="form-text text-muted">
               ※登録したいパスワードを入力
             </small>
