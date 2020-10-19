@@ -1,5 +1,4 @@
 <!-- template page. -->
-
 <!doctype html>
 <html lang="ja">
   <head>
@@ -8,25 +7,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- I tweaked it from a bootstrap tutorial. -->
+    <!-- original css-->
+    <link rel="stylesheet" href="./static/css/font.css">
+    <link rel="stylesheet" href="./static/css/footer.css">
+    <!--google font-->
+    <link href="https://fonts.googleapis.com/earlyaccess/nicomoji.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap" rel="stylesheet">
+    <!-- Font awesome -->
+
     <!-- Various Information -->
     <title> {{ title }} </title>
 
   </head>
 
   <body>
-    <h1>webhook_server</h1>
-    <!-- メインコンテンツ -->
-	{%- block content %}{% endblock %}
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
-  <footer class="fixed-bottom">
-    <ul class="nav nav-tabs nav-justified">
-      <li class="nav-item"><a class="nav-link" href="/user_info">user_info</a></li>
-    </ul>
-  </footer>
+    <div id="wrapper">
+      <nav class="navbar navbar-dark bg-primary mb-2 p-4">
+        <a href="/" class="navbar-brand">
+            <h2>
+                <div class = "pagetitle">
+                  なんかのシステムです！
+                </div>
+            </h2>
+        </a>
+        <button class="navbar-toggler" type="button"
+            data-toggle="collapse"
+            data-target="#navmenu1"
+            aria-controls="navmenu1"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+        </button>
+        <div class="dropdown">
+          <button type="button" id="dropdownMenuButton" class="btn btn-secondary dropdown-toggle btn-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="z-index:9999">
+            <a class="dropdown-item" href="#">Menu #1</a>
+            <a class="dropdown-item" href="#">Menu #2</a>
+            <a class="dropdown-item" href="#">Menu #3</a>
+          </div>
+        </div>
+      </nav>
+      <!-- メインコンテンツ -->
+    {%- block content %}{% endblock %}
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </body>
+
+    <footer class="page-footer font-small blue pt-4">
+      <div class="container-fluid text-center text-md-left">
+        <hr />
+        <div class="row justify-content-md-center">
+          <div class="col-sm col-lg-4">
+            <h5 class="text-uppercase">Footer Content</h5>
+            <p>Here you can use rows and columns to organize your footer content.</p>
+          </div>
+          <div class="col-sm col-lg-4">
+              <h5>コンタクト</h5>
+              <a href="https://twitter.com/yamazakisum"><i class="fab fa-twitter-square fa-3x"></i></a>
+              <a href="mailto:c6001513@planet.kanazawa-it.ac.jp"><i class="fa fa-envelope-square fa-3x"></i></a>
+              <a href="/information"><i class="fas fa-external-link-square-alt fa-3x"></i></a>
+              <a href="https://github.com/naikasann"><i class="fab fa-github-square fa-3x"></i></a>
+          </div>
+        </div>
+      </div>
+        <div class="footer-copyright text-center py-3">
+          <p class="txt-railway">- This software includes the work that is distributed in the Apache License 2.0 - <br> - yamazaki kohei - </p>
+        </div>
+    </footer>
+  </div>
 </html>
