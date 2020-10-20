@@ -1,17 +1,11 @@
 {%- extends "layout.html" %}
 {%- block content %}
-  <header>
-    <nav>
-      <ul class="nav nav-tabs nav-justified">
-        <li class="nav-item"><a class="nav-link" href="/">index</a></li>
-        <li class="nav-item"><a class="nav-link  active" href="/registration">resistration</a></li>
-        <li class="nav-item justify-content-end"><a class="nav-link" href="/user">ログイン</a></li>
-      </ul>
-    </nav>
+<div class="jumbotron d-flex align-items-center">
+  <div class="container">
     <div class="card">
       <div class="card-header">
         <h4 class="card-title">
-           Registration Form:
+            Registration Form:
         </h4>
       </div>
       <div class="card-body">
@@ -43,5 +37,6 @@
         </form>
       </div>
     </div>
-  </header>
+  </div>
+</div>
 {%- endblock %}
