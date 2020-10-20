@@ -18,3 +18,9 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 130%;
     letter-spacing: 0.1em;
 }
+
+.footer_content_title{
+    font-family: "Nico Moji";
+    font-size: 110%;
+    letter-spacing: 0.1em;
+}
