@@ -1,18 +1,8 @@
 from flask import Flask
+from flask import render_template, redirect, jsonify
 from flask import request
-from flask import render_template
-from flask import jsonify
 from flask import session
-from flask import redirect, url_for
 from flask import send_from_directory
-
-from types import resolve_bases
-
-from sqlalchemy import create_engine,Column,Integer,String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql.visitors import traverse_using
 
 import os
 
@@ -48,7 +38,11 @@ def top_page():
     islogin, loginuser=isLogin()
     # for debug
     alldata=UserData.getAll()
-    return render_template("/index.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
+    if isLogin:
+        # return render_template("/userpage/data.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
+        return render_template("/index.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
+    else:
+        return render_template("/index.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
 
 # information page. (Contact page to the creator)
 @app.route("/information")
@@ -58,36 +52,22 @@ def author_info():
 
 # login page.
 @app.route("/login")
-def user_research():
-    islogin, loginuser=isLogin()
-    return render_template("/userpage/login.html", title="ログイン", login_flg=islogin, login_user=loginuser)
+def login():
+    return render_template("/userpage/login.html", title="ログイン", msg="", login_flg=False, login_user="")
 
 # send login form.
 @app.route("/login",methods=["POST"])
-def login():
-    # Connect a database session.
-    engine=create_engine("sqlite:///database.sqlite3")
-    Session=sessionmaker(bind=engine)
-    ses=Session()
+def login_post():
     # Get the id and password from the http post.
     request_id=request.form.get("id")
     request_password=request.form.get("pass")
-    # Refers to the ID entered. (Whether it exists or not.)
-    # The return value is the column
-    database_id_list=ses.query(UserData).filter(UserData.id==request_id).all()
-    for database_id in database_id_list:
-        if str(database_id.password)==str(request_password):
-            # all_data=ses.query(ReceiveData).filter(ReceiveData.device_id==database_id.device_id).all()
-            alldata=UserData.getAll()
-            # Record login information in the session.
-            session["login"]=True
-            session["id"]=str(request_id)
-            # Session Updates
-            islogin, loginuser=isLogin()
-            ses.close()
-            return render_template("index.html", all_userdata=alldata, title="なにかのページ", login_flg=islogin, login_user=loginuser)
-    ses.close()
-    return render_template("index.html",log="IDまたはパスワードが違います")
+    if(UserData.dologin(request_id, request_password)):
+        # Record login information in the session.
+        session["login"]=True
+        session["id"]=str(request_id)
+        return redirect("/")
+    else:
+        return render_template("/userpage/login.html", title="ログイン", msg="IDまたはパスワードが異なっています。", login_flg=False, login_user="")
 
 @app.route("/logout")
 def logout():
@@ -97,13 +77,12 @@ def logout():
 
 # user signup page.
 @app.route("/signup")
-def user_registration():
-    islogin, loginuser = isLogin()
-    return render_template("/userpage/signup.html", title = "ログイン", login_flg = islogin, login_user = loginuser)
+def signup():
+    return render_template("/userpage/signup.html", title = "サインアップ", msg="", login_flg=False, login_user="")
 
 # send signup data.
 @app.route("/signup",methods=["POST"])
-def sign_up():
+def signup_post():
     # Get the id and password and device_id from the http post.
     request_id=request.form.get("id")
     request_device_id=request.form.get("device_id")
@@ -116,18 +95,13 @@ def sign_up():
         session["id"]=str(request_id)
         return redirect("/")
     else:
-        return render_template("/userpage/signup.html",msg=errormsg)
+        return render_template("/userpage/signup.html", title = "サインアップ", msg=errormsg, login_flg=False, login_user="")
 
-################################################################
-# Information page after login
-################################################################
-@app.route("/userpage")
-def userpage():
-    return render_template("userpage.html")
+@app.route("/userdata")
+def userdata():
+    islogin, loginuser=isLogin()
+    return render_template("/userpage/userdata.html", title = str(loginuser) + "さんのぺーじ",login_flg=islogin, login_user=loginuser)
 
-@app.route("/graph")
-def graph():
-    return render_template("graphdata.html")
 ################################################################
 # Http request page.
 ################################################################
@@ -173,9 +147,11 @@ def favicon():
 ################################################################
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('/error/error.html')
+    return render_template('/error/404.html')
 
+################################################################
 # application runnning.
+################################################################
 if __name__ == "__main__":
     # debug mode.
     app.run(debug=True)

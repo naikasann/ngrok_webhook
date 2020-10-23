@@ -76,6 +76,22 @@ class UserData(Base):
 
         return res
 
+    def dologin(id, password):
+        # create session.
+        ses=UserData.createConnection()
+        # Refers to the ID entered. (Whether it exists or not.)
+        # The return value is the column
+        database_id_list=ses.query(UserData).filter(UserData.id==id).all()
+        for database_id in database_id_list:
+            if str(database_id.password)==str(password):
+                # all_data=ses.query(ReceiveData).filter(ReceiveData.device_id==database_id.device_id).all()
+                alldata=UserData.getAll()
+                ses.close()
+                return True
+        ses.close()
+        return False
+
+
     def makeRegistration(id, deviceid, password):
         error_list = []
         # create session.
