@@ -1,13 +1,49 @@
 {%- extends "layout.html" %}
 {%- block content %}
-    <header>
-      <div class = "container">
-        <h1>ようこそ</h1>
-        {% for user in all_userdata %}
-        <p>
-          {{user.id}}:{{user.device_id}}:{{user.password}}
-        </p>
-        {% endfor %}
-      </div>
-    </header>
+  <div class = "container">
+  </br>
+    {% if login_flg %}
+      <h1 class="display-6">ようこそ! {{ login_user }} さん</h1>
+      </br>
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th> USER ID </th>
+            <th> DEVICE ID </th>
+            <th> PASSWORD </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in all_userdata %}
+            <tr>
+              <td> {{user.id}} </td>
+              <td> {{user.device_id}} </td>
+              <td> {{user.password}} </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <h1>ログインしてません</h1>
+      </br>
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th> USER ID </th>
+            <th> DEVICE ID </th>
+            <th> PASSWORD </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in all_userdata %}
+            <tr>
+              <td> {{user.id}} </td>
+              <td> {{user.device_id}} </td>
+              <td> {{user.password}} </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
 {%- endblock %}
