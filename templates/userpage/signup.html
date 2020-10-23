@@ -8,8 +8,13 @@
             Registration Form:
         </h4>
       </div>
+      <div class="card-header">
+        <h4 class="card-title">
+            {{ msg }}
+        </h4>
+      </div>
       <div class="card-body">
-        <form method="post" action="/sign_up">
+        <form method="post" action="/signup">
           <div class="form-group">
             <label for="id">id</label>
             <input type="text" class="form-control" id="id" name="id" value="{{id}}" required>
