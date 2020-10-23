@@ -44,11 +44,11 @@ def isLogin():
 # top page.
 @app.route("/")
 def top_page():
-    # for debug
-    alldata=UserData.getAll()
     # session login check.
     islogin, loginuser=isLogin()
-    return render_template("/index.html", all_userdata=alldata, title="なにかのページ", login_flg=islogin, login_user=loginuser)
+    # for debug
+    alldata=UserData.getAll()
+    return render_template("/index.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
 
 # information page. (Contact page to the creator)
 @app.route("/information")
@@ -69,7 +69,7 @@ def login():
     engine=create_engine("sqlite:///database.sqlite3")
     Session=sessionmaker(bind=engine)
     ses=Session()
-    # Get the id and password from the database.
+    # Get the id and password from the http post.
     request_id=request.form.get("id")
     request_password=request.form.get("pass")
     # Refers to the ID entered. (Whether it exists or not.)
@@ -79,13 +79,15 @@ def login():
         if str(database_id.password)==str(request_password):
             # all_data=ses.query(ReceiveData).filter(ReceiveData.device_id==database_id.device_id).all()
             alldata=UserData.getAll()
+            # Record login information in the session.
             session["login"]=True
             session["id"]=str(request_id)
+            # Session Updates
             islogin, loginuser=isLogin()
             ses.close()
             return render_template("index.html", all_userdata=alldata, title="なにかのページ", login_flg=islogin, login_user=loginuser)
     ses.close()
-    return render_template("index.html",log="IDまたはパスワードが違います")#とりあえずトップページ
+    return render_template("index.html",log="IDまたはパスワードが違います")
 
 @app.route("/logout")
 def logout():
@@ -102,21 +104,19 @@ def user_registration():
 # send signup data.
 @app.route("/signup",methods=["POST"])
 def sign_up():
+    # Get the id and password and device_id from the http post.
     request_id=request.form.get("id")
     request_device_id=request.form.get("device_id")
     request_password=request.form.get("pass")
-    userdata=UserData(id=request_id,device_id=request_device_id,password=request_password)
-    engine=create_engine("sqlite:///database.sqlite3")
-    Session=sessionmaker(bind=engine)
-    ses=Session()
-    if(len(ses.query(UserData).filter(UserData.id==request_id).all())>=1):
-        ses.close()
-        return render_template("index.html",log="IDが重複しています")
-    ses.add(userdata)
-    ses.commit()
-    ses.close()
-    #userdata.add()
-    return render_template("index.html",log="登録成功")
+    # do database resister.
+    isRegister, errormsg = UserData.makeRegistration(request_id, request_device_id, request_password)
+    if(isRegister):
+        # Record login information in the session.
+        session["login"]=True
+        session["id"]=str(request_id)
+        return redirect("/")
+    else:
+        return render_template("/userpage/signup.html",msg=errormsg)
 
 ################################################################
 # Information page after login

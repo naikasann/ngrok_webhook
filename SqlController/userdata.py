@@ -1,5 +1,6 @@
 #model class
 from sqlalchemy import Column,Integer,String,Text
+from sqlalchemy import engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine,Column,Integer,String
 from sqlalchemy.ext.declarative import declarative_base
@@ -18,7 +19,6 @@ class UserData(Base):
     device_id=Column(String(255))
     password=Column(String(255))
 
-
     def __init__(self,id=None,device_id=None,password=None):
         """
         function : Initialize the class.
@@ -29,10 +29,6 @@ class UserData(Base):
         self.password=password
         # database class cast.
         init_db()
-        """engine=create_engine("sqlite:///user.sqlite3")
-        db_session=scoped_session(sessionmaker(bind=engine))
-        Base=declarative_base()
-        Base.metadata.create_all(bind=engine)"""
 
     def toDict(self):
         """
@@ -57,15 +53,57 @@ class UserData(Base):
             res.append(item.toDict())
         return res
 
+    def createConnection():
+        # create session.
+        engine=create_engine("sqlite:///database.sqlite3")
+        Session=sessionmaker(bind=engine)
+        ses=Session()
+
+        return ses
+
     #get all userdata record
     def getAll():
         """
         function :　Retrieve all columns of the user table
         return   :  All data in the usertable. (maybe : list?)
         """
-        engine=create_engine("sqlite:///database.sqlite3")
-        Session=sessionmaker(bind=engine)
-        ses=Session()
+        # create session.
+        ses=UserData.createConnection()
+        # Get all of the Userdata
         res=ses.query(UserData).all()
+        # session close.
         ses.close()
+
         return res
+
+    def makeRegistration(id, deviceid, password):
+        error_list = []
+        # create session.
+        ses=UserData.createConnection()
+        # Creates an instance of user data for registration
+        userdata=UserData(id=id,device_id=deviceid,password=password)
+
+        # TODO : It should be filtered with regular expressions for registration.
+        # now  : It's all registered.
+
+        # Make sure there are no duplicate ID.
+        if(len(ses.query(UserData).filter(UserData.id==id).all())>=1):
+            doregister=False
+            error_list.append("IDが重複しています！")
+        # Make sure there are no duplicate DevID.
+        if(len(ses.query(UserData).filter(UserData.device_id==deviceid).all())>=1):
+            doregister=False
+            error_list.append("デバイスIDが重複しています！")
+        else:
+            doregister=True
+
+        # To register or not to register.
+        if doregister:
+            # Since there is none, run a database entry
+            ses.add(userdata)
+            ses.commit()
+            ses.close()
+            return True, error_list
+        else:
+            # Returning a list of error messages without registering
+            return False, error_list
