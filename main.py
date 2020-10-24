@@ -10,7 +10,7 @@ from SqlController.receivetable import ReceiveData
 from SqlController.userdata import UserData
 
 app = Flask(__name__)
-app.secret_key=b"19971128"
+app.secret_key=b"888888"
 #engine=create_engine("sqlite:///sample.sqlite3")
 #Base=declarative_base()
 
@@ -21,12 +21,17 @@ app.secret_key=b"19971128"
 def isLogin():
     # session login? => (True):rerturn session id.
     if "login" in session and session["login"]:
-        login_user=session["id"]
-        session["login"]=True
+        islogin=True
     else:
-        login_user=""
-        session["login"]=False
-    return session["login"], login_user
+        islogin=False
+    return islogin
+
+def get_username(islogin):
+    if islogin:
+        name = session["id"]
+    else:
+        name = ""
+    return name
 
 ################################################################
 # Page before login
@@ -35,20 +40,16 @@ def isLogin():
 @app.route("/")
 def top_page():
     # session login check.
-    islogin, loginuser=isLogin()
-    # for debug
-    alldata=UserData.getAll()
-    if isLogin:
-        # return render_template("/userpage/data.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
-        return render_template("/index.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
+    if isLogin():
+        alldata=ReceiveData.getAll()
+        return render_template("/userpage/data.html", title="なにかのページ", all_userdata=alldata, login_flg=False, login_user=get_username(True))
     else:
-        return render_template("/index.html", title="なにかのページ", all_userdata = alldata, login_flg=islogin, login_user=loginuser)
+        return redirect("/login")
 
 # information page. (Contact page to the creator)
 @app.route("/information")
 def author_info():
-    islogin, loginuser=isLogin()
-    return render_template("/information.html", title="お問い合わせ", login_flg=islogin, login_user=loginuser)
+    return render_template("/information.html", title="お問い合わせ", login_flg=isLogin(), login_user=get_username(isLogin()))
 
 # login page.
 @app.route("/login")
@@ -72,7 +73,7 @@ def login_post():
 @app.route("/logout")
 def logout():
     session.pop("id", None)
-    session.pop("login")
+    session.pop("login", False)
     return redirect("/")
 
 # user signup page.
@@ -99,8 +100,7 @@ def signup_post():
 
 @app.route("/userdata")
 def userdata():
-    islogin, loginuser=isLogin()
-    return render_template("/userpage/userdata.html", title = str(loginuser) + "さんのぺーじ",login_flg=islogin, login_user=loginuser)
+    return render_template("/userpage/userdata.html", title = str(get_username(isLogin())) + "さんのぺーじ",login_flg=isLogin(), login_user=get_username(isLogin()))
 
 ################################################################
 # Http request page.
