@@ -1,0 +1,26 @@
+{%- extends "layout.html" %}
+{%- block content %}
+<div class = "container">
+  <p>
+    <h1 class="display-6">ようこそ 何かするシステムへ</h1>
+  </p>
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th> USER ID </th>
+        <th> DEVICE ID </th>
+        <th> PASSWORD </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in all_userdata %}
+        <tr>
+          <td> {{user.id}} </td>
+          <td> {{user.device_id}} </td>
+          <td> {{user.password}} </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{%- endblock %}
