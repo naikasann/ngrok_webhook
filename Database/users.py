@@ -1,23 +1,23 @@
 #model class
+from enum import unique
 from sqlalchemy import Column,Integer,String,Text
-from sqlalchemy import engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine,Column,Integer,String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session,sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 
-from SqlController.database import init_db
+from Database.database import init_db
 
 Base=declarative_base()
 
-class UserData(Base):
+class Users(Base):
     # sql database table name.
-    __tablename__="usertable"
+    __tablename__="users"
     # Declaration of each column in the userdata table
-    id=Column(String,primary_key=True)
-    device_id=Column(String(255))
-    password=Column(String(255))
+    id=Column(Text(20),primary_key=True, nullable=False, unique=True)
+    device_id=Column(Text(20), nullable=False, unique=True)
+    password=Column(Text(20), nullable=False)
 
     def __init__(self,id=None,device_id=None,password=None):
         """
@@ -30,32 +30,9 @@ class UserData(Base):
         # database class cast.
         init_db()
 
-    def toDict(self):
-        """
-        function :　Each value of the table is returned as a dictionary type.
-                    (WARNING : Since we return a variable in the class,
-                    we move the function to be retrieved before that.)
-        return   :  table variable.
-        """
-        return{
-            "id":str(self.id),
-            "device_id":str(self.device_id),
-            "password":str(self.password)
-        }
-
-    def getByList(self, arr):
-        """
-        function :　Converts the specified list to a dictionary list and returns it.
-        return   :  table variable.(list<dict>)
-        """
-        res=[]
-        for item in arr:
-            res.append(item.toDict())
-        return res
-
     def createConnection():
         # create session.
-        engine=create_engine("sqlite:///database.sqlite3")
+        engine=create_engine("sqlite:///sigfoxdatabase.db")
         Session=sessionmaker(bind=engine)
         ses=Session()
 
@@ -68,24 +45,24 @@ class UserData(Base):
         return   :  All data in the usertable. (maybe : list?)
         """
         # create session.
-        ses=UserData.createConnection()
+        ses=Users.createConnection()
         # Get all of the Userdata
-        res=ses.query(UserData).all()
+        res=ses.query(Users).all()
         # session close.
         ses.close()
 
         return res
 
-    def dologin(id, password):
+    def doLogin(id, password):
         # create session.
-        ses=UserData.createConnection()
+        ses=Users.createConnection()
         # Refers to the ID entered. (Whether it exists or not.)
         # The return value is the column
-        database_id_list=ses.query(UserData).filter(UserData.id==id).all()
+        database_id_list=ses.query(Users).filter(Users.id==id).all()
         for database_id in database_id_list:
             if str(database_id.password)==str(password):
                 # all_data=ses.query(ReceiveData).filter(ReceiveData.device_id==database_id.device_id).all()
-                alldata=UserData.getAll()
+                alldata=Users.getAll()
                 ses.close()
                 return True
         ses.close()
@@ -95,19 +72,19 @@ class UserData(Base):
     def makeRegistration(id, deviceid, password):
         error_list = []
         # create session.
-        ses=UserData.createConnection()
+        ses=Users.createConnection()
         # Creates an instance of user data for registration
-        userdata=UserData(id=id,device_id=deviceid,password=password)
+        regist_data=Users(id=id,device_id=deviceid,password=password)
 
         # TODO : It should be filtered with regular expressions for registration.
         # now  : It's all registered.
 
         # Make sure there are no duplicate ID.
-        if(len(ses.query(UserData).filter(UserData.id==id).all())>=1):
+        if(len(ses.query(Users).filter(Users.id==id).all())>=1):
             doregister=False
             error_list.append("IDが重複しています！")
         # Make sure there are no duplicate DevID.
-        if(len(ses.query(UserData).filter(UserData.device_id==deviceid).all())>=1):
+        if(len(ses.query(Users).filter(Users.device_id==deviceid).all())>=1):
             doregister=False
             error_list.append("デバイスIDが重複しています！")
         else:
@@ -116,7 +93,7 @@ class UserData(Base):
         # To register or not to register.
         if doregister:
             # Since there is none, run a database entry
-            ses.add(userdata)
+            ses.add(regist_data)
             ses.commit()
             ses.close()
             return True, error_list
