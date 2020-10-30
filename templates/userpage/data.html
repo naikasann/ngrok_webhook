@@ -3,10 +3,11 @@
 </br>
 <div class = "container">
   <h1>ようこそ {{ login_user }} さん!</h1>
+  {{user_datas}}
   <table class="table table-striped">
-    <tr><th>タイムスタンプ</th><th>デバイスID</th><th>データ</th><th>生データ</th></tr>
-  {% for data in all_userdata %}
-    <tr><td>{{data.timestamp}}</td><td>{{data.device_id}}</td><td>{{data.data}}</td><td>{{data.rawdata}}</td></tr>
+    <tr><th>タイムスタンプ</th><th>デバイスID</th><th>データ</th><th>(緯度,経度)</th><th>誤差半径(m)</th></tr>
+  {% for data in user_datas %}
+    <tr><td>{{data.timestamp}}</td><td>{{data.device_id}}</td><td>{{data.data}}</td><td>( {{data.lat}}, {{data.lng}} )</td><td> {{data.radius}}</td></tr>
   {% endfor %}
   </table>
 </div>

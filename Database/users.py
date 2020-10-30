@@ -6,6 +6,7 @@ from sqlalchemy import create_engine,Column,Integer,String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session,sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql.functions import user
 
 from Database.database import init_db
 
@@ -68,7 +69,6 @@ class Users(Base):
         ses.close()
         return False
 
-
     def makeRegistration(id, deviceid, password):
         error_list = []
         # create session.
@@ -100,3 +100,11 @@ class Users(Base):
         else:
             # Returning a list of error messages without registering
             return False, error_list
+
+    def getDeviceidfromID(id):
+        # create session.
+        ses=Users.createConnection()
+        # Get one user column with matching id
+        user = ses.query(Users).filter(Users.id==id).one()
+
+        return user.device_id

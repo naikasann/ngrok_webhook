@@ -78,33 +78,12 @@ class PostDatas(Base):
             ses.close()
             checkses.close()
 
-    def takeDatafromDeviceid(device_id):
+    """    def getDatasfromDeviceid(device_id):
         # create session.
         ses=PostDatas.createConnection()
         # Extract all of them by specifying the data ID.
-        datalist = ses.query(PostDatas).filter(PostDatas.device_id==device_id).all()
 
-        return datalist
-
-    def takeDatafromDataid(data_id):
-        # create session.
-        ses=PostDatas.createConnection()
-        # Extract all of them by specifying the data ID.
-        datalist = ses.query(PostDatas).filter(PostDatas.data_id==data_id).all()
-
-        return datalist
-
-    def takeDataid(device_id):
-        # create session.
-        ses=PostDatas.createConnection()
-        # Extract all of them by specifying the data ID.
-        datalist = ses.query(PostDatas).filter(PostDatas.device_id==device_id).all()
-        # How to write a slow process! Poop!
-        dataid_list =[]
-        for data in datalist:
-            dataid_list.append(data.data_id)
-
-        return dataid_list
+        return user_datas"""
 
     def getLastDataid():
         ses = PostDatas.createConnection()

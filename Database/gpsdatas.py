@@ -1,5 +1,4 @@
 #model class
-from enum import unique
 from sqlalchemy import Column,Integer,String,Text
 from sqlalchemy.schema import ForeignKey
 from sqlalchemy import create_engine,Column,Integer,String
@@ -68,7 +67,7 @@ class GpsDatas(Base):
         ses.commit()
         ses.close()
 
-    def takeData(data_id):
+    def getData(data_id):
         # create session.
         ses=GpsDatas.createConnection()
         # Extract all of them by specifying the data ID.

@@ -8,6 +8,15 @@ import os
 import json
 import datetime
 
+from sqlalchemy import Column,Integer,String,Text
+from sqlalchemy.schema import ForeignKey
+from sqlalchemy import create_engine,Column,Integer,String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session,sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.sql.functions import user
+from sqlalchemy.sql.sqltypes import INTEGER
+
 from Database.users import Users
 from Database.postdatas import PostDatas
 from Database.gpsdatas import GpsDatas
@@ -51,8 +60,15 @@ def debug_page():
 def top_page():
     # session login check.
     if isLogin():
-        alldata=PostDatas.getAll()
-        return render_template("/userpage/data.html", title="なにかのページ", all_userdata=alldata, login_flg=True, login_user=get_username(True))
+        # getdevice id from users
+        device_id = Users.getDeviceidfromID(get_username(True))
+        # used deviceid and get postdata and gps data.
+        ses = PostDatas.createConnection()
+        # Filter all user data and output it all
+        user_datas = ses.query(PostDatas, GpsDatas).join(GpsDatas, PostDatas.data_id == GpsDatas.data_id).all()
+        ses.close()
+        print(user_datas)
+        return render_template("/userpage/data.html", title="なにかのページ", user_datas=user_datas, login_flg=True, login_user=get_username(True))
     else:
         return redirect("/login")
 
