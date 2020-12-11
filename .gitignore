@@ -4,3 +4,4 @@ ngrok-stable-windows-amd64/ngrok.exe
 ngrok.exe
 Fontawesome.md
 *.sqlite3
+*.db
