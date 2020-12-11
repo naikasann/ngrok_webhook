@@ -139,6 +139,7 @@ def data_form():
         if request.headers.get('User-Agent') == "SIGFOX":
             # Retrieve the body information and convert it to json format
             request_data = json.loads(request.data)
+            print(request_data)
             # Retrieving the data needed for the database. (Device ID, receive time, actual raw data)
             device_id = request_data["device"]
             recv_time = datetime.datetime.fromtimestamp(request_data["time"])
